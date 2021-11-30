@@ -6,7 +6,7 @@ data class Car(
     val id: Int,
     val type: String,
     val image: String,
-    val owner: User,
+    val owner: User?,
     val lastInspection: Date,
     val licensePlate: String,
     val cylinderCapacity: Int,
@@ -14,5 +14,5 @@ data class Car(
     val horsepower: Int,
     val totalMass: Int,
     val ownMass: Int,
-    val propellant: Int
+    val propellant: Propellant
 )
