@@ -1,7 +1,10 @@
 package hu.unimiskolc.iit.mobile.core.domain
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import java.util.*
 
+@Parcelize
 data class Car(
     val id: Int,
     val type: String,
@@ -15,4 +18,4 @@ data class Car(
     val totalMass: Int,
     val ownMass: Int,
     val propellant: Propellant
-)
+) : Parcelable

@@ -1,7 +1,7 @@
 package hu.unimiskolc.iit.mobile.carnotify.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -54,10 +55,31 @@ class AddCarFragment: Fragment() {
 
     private lateinit var cacheDir: File
 
-    companion object {
-        const val REQUEST_CODE_PICK_IMAGE = 101
-    }
+    private var lastInspectionCalendar: Calendar = Calendar.getInstance()
 
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+
+            selectedImageUri = data?.data
+            binding.uploadImage.setImageURI(selectedImageUri)
+
+            if (selectedImageUri == null) {
+                binding.root.snackbar("Select an Image First")
+                return@registerForActivityResult
+            }
+
+            val parcelFileDescriptor =
+                contentResolver.openFileDescriptor(selectedImageUri!!, "r", null) ?: return@registerForActivityResult
+
+            val inputStream = FileInputStream(parcelFileDescriptor.fileDescriptor)
+            val file = File(cacheDir, contentResolver.getFileName(selectedImageUri!!))
+            val outputStream = FileOutputStream(file)
+            inputStream.copyTo(outputStream)
+
+            selectedImageFilePath = file.path
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -78,7 +100,6 @@ class AddCarFragment: Fragment() {
         return binding.root
     }
 
-    @SuppressLint("SimpleDateFormat")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -93,13 +114,28 @@ class AddCarFragment: Fragment() {
             openImageChooser()
         }
 
+        val dateSetListener = DatePickerDialog.OnDateSetListener {
+            _, year, monthOfYear, dayOfMonth ->
+                val formatter = SimpleDateFormat("yyyy.MM.dd", Locale.US)
+
+                lastInspectionCalendar.set(Calendar.YEAR, year)
+                lastInspectionCalendar.set(Calendar.MONTH, monthOfYear)
+                lastInspectionCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+                binding.lastInspectionValue.text = formatter.format(lastInspectionCalendar.time)
+        }
+
+        binding.lastInspection.setOnClickListener {
+            DatePickerDialog(this.requireContext(),
+                dateSetListener,
+                lastInspectionCalendar.get(Calendar.YEAR),
+                lastInspectionCalendar.get(Calendar.MONTH),
+                lastInspectionCalendar.get(Calendar.DAY_OF_MONTH)).show()
+        }
 
         binding.submitButton.setOnClickListener {
             uiScope.launch {
-                val parser =  SimpleDateFormat("yyyy-MM-dd")
-
                 val type: String = binding.type.text.toString()
-                val lastInspectionString: String = binding.lastInspection.text.toString()
                 val licensePlate: String = binding.licensePlate.text.toString()
                 val cylinderCapacity: String = binding.cylinderCapacity.text.toString()
                 val enginePower: String = binding.enginePower.text.toString()
@@ -110,7 +146,6 @@ class AddCarFragment: Fragment() {
 
                 if(
                    type == "" ||
-                   lastInspectionString == "" ||
                    licensePlate == "" ||
                    cylinderCapacity == "" ||
                    enginePower == "" ||
@@ -127,8 +162,6 @@ class AddCarFragment: Fragment() {
                     return@launch
                 }
 
-                val lastInspectionFormatted: Date = parser.parse(lastInspectionString)!!
-
                 val user = arguments?.get("user") as User
 
                 val car = Car(
@@ -136,7 +169,7 @@ class AddCarFragment: Fragment() {
                     type,
                     selectedImageFilePath,
                     user,
-                    lastInspectionFormatted,
+                    lastInspectionCalendar.time,
                     licensePlate,
                     cylinderCapacity.toInt(),
                     enginePower.toInt(),
@@ -170,34 +203,13 @@ class AddCarFragment: Fragment() {
             it.type = "image/*"
             val mimeTypes = arrayOf("image/jpeg", "image/png")
             it.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
-            startActivityForResult(it, REQUEST_CODE_PICK_IMAGE)
+            resultLauncher.launch(it)
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                REQUEST_CODE_PICK_IMAGE -> {
-                    selectedImageUri = data?.data
-                    binding.uploadImage.setImageURI(selectedImageUri)
-
-                    if (selectedImageUri == null) {
-                        binding.root.snackbar("Select an Image First")
-                        return
-                    }
-
-                    val parcelFileDescriptor =
-                        contentResolver.openFileDescriptor(selectedImageUri!!, "r", null) ?: return
-
-                    val inputStream = FileInputStream(parcelFileDescriptor.fileDescriptor)
-                    val file = File(cacheDir, contentResolver.getFileName(selectedImageUri!!))
-                    val outputStream = FileOutputStream(file)
-                    inputStream.copyTo(outputStream)
-
-                    selectedImageFilePath = file.path
-                }
-            }
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        selectedImageUri = null
     }
 }

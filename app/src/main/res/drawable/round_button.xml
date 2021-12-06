@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- shadow -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/button_shadow"/>
+        </shape>
+    </item>
+
+    <item
+        android:left="0dp"
+        android:right="6dp"
+        android:top="0dp"
+        android:bottom="5dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/car_icon_background"/>
+            <size android:width="100dp" android:height="100dp"/>
+        </shape>
+    </item>
+</layer-list>

@@ -1,12 +1,11 @@
 package hu.unimiskolc.iit.mobile.carnotify.fragment
 
-import android.annotation.SuppressLint
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.room.Room
@@ -21,7 +20,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.mindrot.jbcrypt.BCrypt
-import java.text.SimpleDateFormat
 import java.util.*
 
 class RegistrationFragment: Fragment() {
@@ -34,6 +32,8 @@ class RegistrationFragment: Fragment() {
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     private lateinit var userDataSource: RoomUserDataSource
+
+    private var birthDateCalendar: Calendar = Calendar.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,23 +49,32 @@ class RegistrationFragment: Fragment() {
         userDataSource = RoomUserDataSource(db.userDao(), UserMapper())
 
         return binding.root
-
     }
 
-    @SuppressLint("SimpleDateFormat")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+            birthDateCalendar.set(Calendar.YEAR, year)
+            birthDateCalendar.set(Calendar.MONTH, monthOfYear)
+            birthDateCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        }
+
+        binding.birthDate.setOnClickListener {
+            DatePickerDialog(this.requireContext(),
+                dateSetListener,
+                birthDateCalendar.get(Calendar.YEAR),
+                birthDateCalendar.get(Calendar.MONTH),
+                birthDateCalendar.get(Calendar.DAY_OF_MONTH)).show()
+        }
+
         binding.submitButton.setOnClickListener {
             uiScope.launch {
-                val parser =  SimpleDateFormat("yyyy-MM-dd")
-
                 val name: String = binding.name.text.toString()
                 val email: String = binding.email.text.toString()
                 val password: String = binding.password.text.toString()
-                val birthDateString: String = binding.birthDate.text.toString()
 
-                if(name == "" || email == "" || password == "" || birthDateString == "") {
+                if(name == "" || email == "" || password == "") {
                     Toast.makeText(
                         requireContext(),
                         "Missing form data.",
@@ -75,14 +84,24 @@ class RegistrationFragment: Fragment() {
                     return@launch
                 }
 
-                val formattedBirthDate: Date = parser.parse(birthDateString)!!
+                val existingUser = userDataSource.fetchByEmail(email)
+
+                if(existingUser != null || email == "deviceuser@carnotify.com") {
+                    Toast.makeText(
+                        requireContext(),
+                        "Email address already taken.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    return@launch
+                }
 
                 val user = User(
                     0,
                     name,
                     email,
                     BCrypt.hashpw(password, BCrypt.gensalt()),
-                    formattedBirthDate,
+                    birthDateCalendar.time,
                     listOf()
                 )
 
@@ -102,5 +121,10 @@ class RegistrationFragment: Fragment() {
                 return@launch
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

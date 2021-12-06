@@ -19,10 +19,12 @@
     <string name="email_placeholder">Your Email Address</string>
     <string name="password_placeholder">Your Password</string>
     <string name="name_placeholder">Your Name</string>
+    <string name="birth_date_btn_text">Select your date of birth</string>
     <string name="registration_btn_text">Register</string>
+    <string name="fingerprint_instructions">Or verify your identity with your fingerprint</string>
 
     <string name="car_type_placeholder">Type</string>
-    <string name="car_last_inspection_placeholder">Last inspection date</string>
+    <string name="car_last_inspection_placeholder">Select date of last inspection</string>
     <string name="car_license_plate_placeholder">License plate</string>
     <string name="car_cylinder_capacity_placeholder">Cylinder capacity</string>
     <string name="car_engine_power_placeholder">Engine power</string>
@@ -31,4 +33,5 @@
     <string name="car_own_mass_placeholder">Own mass</string>
     <string name="car_propellant_placeholder">Propellant</string>
     <string name="car_image_upload_placeholder">Tap to Select Image</string>
+    <string name="add_car_button_text">Add Car</string>
 </resources>

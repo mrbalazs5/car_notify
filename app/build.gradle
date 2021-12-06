@@ -55,6 +55,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
     implementation "org.mindrot:jbcrypt:0.4"
+    implementation "androidx.biometric:biometric:1.1.0"
     kapt appDeps.room_compiler
 
     testImplementation testDeps.junit

@@ -1,12 +1,10 @@
 package hu.unimiskolc.iit.mobile.framework.db.dao
 
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import hu.unimiskolc.iit.mobile.framework.db.entity.UserEntity
 import hu.unimiskolc.iit.mobile.framework.db.entity.UserInfo
 
+@Dao
 interface UserDao {
     @Insert
     suspend fun insert(entity: UserEntity)

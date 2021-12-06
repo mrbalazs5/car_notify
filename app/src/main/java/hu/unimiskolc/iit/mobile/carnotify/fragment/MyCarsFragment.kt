@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.room.Room
 import hu.unimiskolc.iit.mobile.carnotify.MyCarsListAdapter
+import hu.unimiskolc.iit.mobile.carnotify.R
 import hu.unimiskolc.iit.mobile.carnotify.databinding.MyCarsFragmentBinding
 import hu.unimiskolc.iit.mobile.core.domain.User
 import hu.unimiskolc.iit.mobile.framework.db.CarNotifyDatabase
@@ -51,11 +54,24 @@ class MyCarsFragment: Fragment() {
 
         val user = arguments?.get("user") as User
 
+        binding.addCarButton.setOnClickListener {
+            findNavController()
+                .navigate(
+                    R.id.action_MyCarsFragment_to_AddCarFragment,
+                    bundleOf(Pair("user", user))
+                )
+        }
+
         uiScope.launch {
             val cars = carDataSource.fetchByOwner(user)
 
             binding.myCarsListView.adapter = MyCarsListAdapter(context.requireActivity(), cars)
         }
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
