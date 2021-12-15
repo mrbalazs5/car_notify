@@ -42,8 +42,9 @@
         tools:layout="@layout/car_fragment"
     >
         <argument
-            android:name="user"
-            app:argType="hu.unimiskolc.iit.mobile.core.domain.User" />
+            android:name="carId"
+            app:argType="integer"
+        />
     </fragment>
 
     <fragment

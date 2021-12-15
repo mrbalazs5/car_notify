@@ -65,7 +65,7 @@ class MyCarsFragment: Fragment() {
         uiScope.launch {
             val cars = carDataSource.fetchByOwner(user)
 
-            binding.myCarsListView.adapter = MyCarsListAdapter(context.requireActivity(), cars)
+            binding.myCarsListView.adapter = MyCarsListAdapter(context, cars)
         }
 
     }

@@ -34,4 +34,5 @@
     <string name="car_propellant_placeholder">Propellant</string>
     <string name="car_image_upload_placeholder">Tap to Select Image</string>
     <string name="add_car_button_text">Add Car</string>
+    <string name="car_image">Image of the car</string>
 </resources>
