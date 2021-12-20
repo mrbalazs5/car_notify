@@ -53,7 +53,7 @@ class AddCarFragment: Fragment() {
 
     private lateinit var contentResolver: ContentResolver
 
-    private lateinit var cacheDir: File
+    private lateinit var saveDir: File
 
     private var lastInspectionCalendar: Calendar = Calendar.getInstance()
 
@@ -73,7 +73,7 @@ class AddCarFragment: Fragment() {
                 contentResolver.openFileDescriptor(selectedImageUri!!, "r", null) ?: return@registerForActivityResult
 
             val inputStream = FileInputStream(parcelFileDescriptor.fileDescriptor)
-            val file = File(cacheDir, contentResolver.getFileName(selectedImageUri!!))
+            val file = File(saveDir, contentResolver.getFileName(selectedImageUri!!))
             val outputStream = FileOutputStream(file)
             inputStream.copyTo(outputStream)
 
@@ -88,7 +88,7 @@ class AddCarFragment: Fragment() {
         _binding = AddCarFragmentBinding.inflate(inflater, container, false)
 
         contentResolver = this.requireContext().contentResolver
-        cacheDir = this.requireContext().cacheDir
+        saveDir = this.requireContext().filesDir
 
         val db = Room.databaseBuilder(
             this.requireContext(),

@@ -10,137 +10,269 @@
         android:id="@+id/image"
         android:layout_width="250dp"
         android:layout_height="200dp"
-        android:layout_marginTop="100dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/car_image"
         />
+
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="0dp"
+        android:id="@+id/typeLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/image"
+        android:orientation="horizontal"
         android:gravity="center"
-        app:layout_constraintWidth_percent="0.5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image"
-    >
+        android:layout_marginTop="20dp">
         <TextView
-            android:id="@+id/type"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:id="@+id/typeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:textStyle="bold"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            app:layout_constraintTop_toBottomOf="@+id/image"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.5"
+            android:text="@string/car_type_placeholder"
+            android:layout_marginEnd="10dp"
+            />
+
+        <TextView
+            android:id="@+id/type"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textStyle="normal"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lastInspectionLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/typeLayout"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:id="@+id/lastInspectionLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textStyle="bold"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:text="@string/car_last_inspection_text"
+            android:layout_marginEnd="10dp"
             />
 
         <TextView
             android:id="@+id/lastInspection"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textStyle="normal"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/licensePlateLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/lastInspectionLayout"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:id="@+id/licensePlateLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:textStyle="bold"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            app:layout_constraintTop_toBottomOf="@+id/type"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.5"
+            android:text="@string/car_license_plate_placeholder"
+            android:layout_marginEnd="10dp"
             />
 
         <TextView
             android:id="@+id/licensePlate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textStyle="normal"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/cylinderCapacityLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/licensePlateLayout"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:id="@+id/cylinderCapacityLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:textStyle="bold"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            app:layout_constraintTop_toBottomOf="@+id/lastInspection"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.5"
+            android:text="@string/car_cylinder_capacity_placeholder"
+            android:layout_marginEnd="10dp"
             />
 
         <TextView
             android:id="@+id/cylinderCapacity"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textStyle="normal"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/enginePowerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/cylinderCapacityLayout"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:id="@+id/enginePowerLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:textStyle="bold"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            app:layout_constraintTop_toBottomOf="@+id/licensePlate"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.5"
+            android:text="@string/car_engine_power_placeholder"
+            android:layout_marginEnd="10dp"
             />
 
         <TextView
             android:id="@+id/enginePower"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textStyle="normal"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/horsepowerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/enginePowerLayout"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:id="@+id/horsepowerLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:textStyle="bold"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            app:layout_constraintTop_toBottomOf="@+id/cylinderCapacity"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.5"
+            android:text="@string/car_horse_power_placeholder"
+            android:layout_marginEnd="10dp"
             />
 
         <TextView
             android:id="@+id/horsepower"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textStyle="normal"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/totalMassLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/horsepowerLayout"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:id="@+id/totalMassLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:textStyle="bold"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            app:layout_constraintTop_toBottomOf="@+id/enginePower"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.5"
+            android:text="@string/car_total_mass_placeholder"
+            android:layout_marginEnd="10dp"
             />
 
         <TextView
             android:id="@+id/totalMass"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textStyle="normal"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ownMassLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/totalMassLayout"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:id="@+id/ownMassLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:textStyle="bold"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            app:layout_constraintTop_toBottomOf="@+id/horsepower"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.5"
+            android:text="@string/car_own_mass_placeholder"
+            android:layout_marginEnd="10dp"
             />
 
         <TextView
             android:id="@+id/ownMass"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textStyle="normal"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/propellantLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/ownMassLayout"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:id="@+id/propellantLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:textStyle="bold"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            app:layout_constraintTop_toBottomOf="@+id/totalMass"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.5"
+            android:text="@string/car_propellant_placeholder"
+            android:layout_marginEnd="10dp"
             />
 
         <TextView
             android:id="@+id/propellant"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textStyle="normal"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            app:layout_constraintTop_toBottomOf="@+id/ownMass"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.5"
             />
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/carSettingsButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="50dp"
+        android:layout_marginRight="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/baseline_settings_black_48"
+        android:contentDescription="@string/car_settings_fragment_label"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:longClickable="true"
+        app:tint="@color/purple_500"
+    />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

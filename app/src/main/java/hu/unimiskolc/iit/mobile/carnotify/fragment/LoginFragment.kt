@@ -1,20 +1,16 @@
 package hu.unimiskolc.iit.mobile.carnotify.fragment
 
 import android.app.DatePickerDialog
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.biometric.BiometricManager
-import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
-import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.room.Room
+import hu.unimiskolc.iit.mobile.carnotify.BiometricAuthenticator
 import hu.unimiskolc.iit.mobile.carnotify.R
 import hu.unimiskolc.iit.mobile.carnotify.databinding.LoginFragmentBinding
 import hu.unimiskolc.iit.mobile.core.domain.User
@@ -66,13 +62,44 @@ class LoginFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.fingerprintInstructions.visibility =
-            if (this.isBiometricReady(this.requireContext())) View.VISIBLE else View.GONE
+            if (BiometricAuthenticator.isBiometricReady(this.requireContext())) View.VISIBLE else View.GONE
 
         binding.fingerprintButton.visibility =
-            if (this.isBiometricReady(this.requireContext())) View.VISIBLE else View.GONE
+            if (BiometricAuthenticator.isBiometricReady(this.requireContext())) View.VISIBLE else View.GONE
 
         binding.fingerprintButton.setOnClickListener {
-            showBiometricPrompt()
+            val biometricAuthenticator = BiometricAuthenticator(this) {
+                uiScope.launch {
+                    val deviceEmail = getString(R.string.device_email)
+
+                    val user = userDataSource.fetchByEmail(deviceEmail)
+
+                    if (user == null) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Please select your birth date", Toast.LENGTH_SHORT
+                        )
+                            .show()
+
+                        pickDateTime()
+
+                        return@launch
+                    }
+
+                    findNavController()
+                        .navigate(
+                            R.id.action_LoginFragment_to_MyCarsFragment,
+                            bundleOf(Pair("user", user))
+                        )
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Authentication succeeded!", Toast.LENGTH_SHORT
+                    )
+                        .show()
+                }
+            }
+            biometricAuthenticator.showBiometricPrompt()
         }
 
         binding.submitButton.setOnClickListener {
@@ -94,7 +121,7 @@ class LoginFragment: Fragment() {
                 if(BCrypt.checkpw(password, user.password)) {
                     Toast.makeText(
                         requireContext(),
-                        "Login successful.",
+                        "Authentication succeeded!",
                         Toast.LENGTH_SHORT
                     ).show()
 
@@ -130,110 +157,6 @@ class LoginFragment: Fragment() {
         _binding = null
     }
 
-    private fun hasBiometricCapability(context: Context): Int {
-        val biometricManager = BiometricManager.from(context)
-        return biometricManager.canAuthenticate(BIOMETRIC_STRONG)
-    }
-
-    private fun isBiometricReady(context: Context) =
-        hasBiometricCapability(context) == BiometricManager.BIOMETRIC_SUCCESS
-
-    private fun setBiometricPromptInfo(
-        title: String,
-        subtitle: String,
-        description: String,
-        allowDeviceCredential: Boolean
-    ): BiometricPrompt.PromptInfo {
-        val builder = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(title)
-            .setSubtitle(subtitle)
-            .setDescription(description)
-
-        // Use Device Credentials if allowed, otherwise show Cancel Button
-        builder.apply {
-            if (allowDeviceCredential) setAllowedAuthenticators(BIOMETRIC_STRONG)
-            else setNegativeButtonText("Cancel")
-        }
-
-        return builder.build()
-    }
-
-    private fun initBiometricPrompt(): BiometricPrompt {
-        val executor = ContextCompat.getMainExecutor(requireContext())
-
-        val callback = object : BiometricPrompt.AuthenticationCallback() {
-            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                super.onAuthenticationError(errorCode, errString)
-
-                Toast.makeText(requireContext(),
-                    "Authentication error: $errString", Toast.LENGTH_SHORT)
-                    .show()
-            }
-
-            override fun onAuthenticationFailed() {
-                super.onAuthenticationFailed()
-
-                Toast.makeText(requireContext(), "Authentication failed",
-                    Toast.LENGTH_SHORT)
-                    .show()
-            }
-
-            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                super.onAuthenticationSucceeded(result)
-
-                uiScope.launch {
-                    val deviceEmail = "deviceuser@carnotify.com"
-
-                    val user = userDataSource.fetchByEmail(deviceEmail)
-
-                    if(user == null) {
-                        Toast.makeText(requireContext(),
-                            "Please select your birth date", Toast.LENGTH_SHORT)
-                            .show()
-
-                        pickDateTime()
-
-                        return@launch
-                    }
-
-                    findNavController()
-                        .navigate(
-                            R.id.action_LoginFragment_to_MyCarsFragment,
-                            bundleOf(Pair("user", user))
-                        )
-
-                    Toast.makeText(requireContext(),
-                        "Authentication succeeded!", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            }
-        }
-
-        return BiometricPrompt(this, executor, callback)
-    }
-
-    private fun showBiometricPrompt(
-        title: String = "Biometric Authentication",
-        subtitle: String = "Enter biometric credentials to proceed.",
-        description: String = "Input your Fingerprint or FaceID to ensure it's you!",
-        cryptoObject: BiometricPrompt.CryptoObject? = null,
-        allowDeviceCredential: Boolean = false
-    ) {
-        val promptInfo = setBiometricPromptInfo(
-            title,
-            subtitle,
-            description,
-            allowDeviceCredential
-        )
-
-        val biometricPrompt = initBiometricPrompt()
-
-        biometricPrompt.apply {
-            if (cryptoObject == null) authenticate(promptInfo)
-            else authenticate(promptInfo, cryptoObject)
-        }
-    }
-
     private fun pickDateTime() {
         val c = Calendar.getInstance()
         val mYear = c[Calendar.YEAR]
@@ -246,10 +169,12 @@ class LoginFragment: Fragment() {
                     _, year, monthOfYear, dayOfMonth ->
                 c.set(year, monthOfYear, dayOfMonth)
 
+                val deviceEmail = getString(R.string.device_email)
+
                 val user = User(
                     0,
                     "Device User",
-                    "deviceuser@carnotify.com",
+                    deviceEmail,
                     BCrypt.hashpw("SeCREtDEViceUSErPAsSworD", BCrypt.gensalt()),
                     c.time,
                     listOf()
@@ -258,10 +183,12 @@ class LoginFragment: Fragment() {
                 uiScope.launch {
                     userDataSource.add(user)
 
+                    val dbUser = userDataSource.fetchByEmail(deviceEmail)
+
                     findNavController()
                         .navigate(
                             R.id.action_LoginFragment_to_MyCarsFragment,
-                            bundleOf(Pair("user", user))
+                            bundleOf(Pair("user", dbUser))
                         )
 
                     Toast.makeText(requireContext(),

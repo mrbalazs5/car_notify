@@ -5,9 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.room.Room
 import hu.unimiskolc.iit.mobile.carnotify.MyCarsListAdapter
+import hu.unimiskolc.iit.mobile.carnotify.R
 import hu.unimiskolc.iit.mobile.carnotify.databinding.CarFragmentBinding
 import hu.unimiskolc.iit.mobile.carnotify.databinding.MyCarsFragmentBinding
 import hu.unimiskolc.iit.mobile.core.domain.Car
@@ -59,6 +62,14 @@ class CarFragment: Fragment() {
         val formatter = SimpleDateFormat("yyyy.MM.dd", Locale.US)
 
         val carId = arguments?.get("carId") as Int
+
+        binding.carSettingsButton.setOnClickListener {
+            findNavController()
+                .navigate(
+                    R.id.action_CarFragment_to_CarSettingsFragment,
+                    bundleOf(Pair("carId", carId))
+                )
+        }
 
         uiScope.launch {
             val car = carDataSource.fetchById(carId)

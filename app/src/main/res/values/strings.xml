@@ -7,6 +7,8 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
+    <string name="device_email">deviceuser@carnotify.com</string>
+
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <!-- Strings related to login -->
@@ -15,6 +17,7 @@
     <string name="car_fragment_label">Car</string>
     <string name="login_fragment_label">Login</string>
     <string name="registration_fragment_label">Registration</string>
+    <string name="user_settings_fragment_label">User Settings</string>
     <string name="login_btn_text">Login</string>
     <string name="email_placeholder">Your Email Address</string>
     <string name="password_placeholder">Your Password</string>
@@ -22,6 +25,7 @@
     <string name="birth_date_btn_text">Select your date of birth</string>
     <string name="registration_btn_text">Register</string>
     <string name="fingerprint_instructions">Or verify your identity with your fingerprint</string>
+    <string name="save_btn_text">Save</string>
 
     <string name="car_type_placeholder">Type</string>
     <string name="car_last_inspection_placeholder">Select date of last inspection</string>
@@ -35,4 +39,10 @@
     <string name="car_image_upload_placeholder">Tap to Select Image</string>
     <string name="add_car_button_text">Add Car</string>
     <string name="car_image">Image of the car</string>
+    <string name="car_last_inspection_text">Last inspection</string>
+    <string name="car_settings_fragment_label">Car Settings</string>
+
+    <string name="notification_channel_id">car_notify_channel</string>
+    <string name="notification_channel_name">CarNotify Channel</string>
+    <string name="notification_channel_description">Notifies about your cars.</string>
 </resources>

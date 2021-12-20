@@ -20,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.mindrot.jbcrypt.BCrypt
+import java.text.SimpleDateFormat
 import java.util.*
 
 class RegistrationFragment: Fragment() {
@@ -55,9 +56,13 @@ class RegistrationFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+            val formatter = SimpleDateFormat("yyyy.MM.dd", Locale.US)
+
             birthDateCalendar.set(Calendar.YEAR, year)
             birthDateCalendar.set(Calendar.MONTH, monthOfYear)
             birthDateCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+            binding.birthDateValue.text = formatter.format(birthDateCalendar.time)
         }
 
         binding.birthDate.setOnClickListener {
@@ -85,8 +90,9 @@ class RegistrationFragment: Fragment() {
                 }
 
                 val existingUser = userDataSource.fetchByEmail(email)
+                val deviceEmail = getString(R.string.device_email)
 
-                if(existingUser != null || email == "deviceuser@carnotify.com") {
+                if(existingUser != null || email == deviceEmail) {
                     Toast.makeText(
                         requireContext(),
                         "Email address already taken.",
@@ -117,8 +123,6 @@ class RegistrationFragment: Fragment() {
                     .navigate(
                         R.id.action_RegistrationFragment_to_LoginFragment
                     )
-
-                return@launch
             }
         }
     }

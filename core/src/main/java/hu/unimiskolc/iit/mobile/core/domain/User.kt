@@ -7,9 +7,9 @@ import java.util.*
 @Parcelize
 data class User(
     val id: Int,
-    val name: String,
-    val email: String,
-    val password: String,
-    val birthDate: Date,
+    var name: String,
+    var email: String,
+    var password: String,
+    var birthDate: Date,
     val cars: List<Car>
 ) : Parcelable
