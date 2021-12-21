@@ -6,7 +6,6 @@ import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -110,8 +109,6 @@ class CarSettingsFragment: Fragment() {
 
         val carId = arguments?.get("carId") as Int
         val user = arguments?.get("user") as User
-
-        Log.d("test", user.toString())
 
         binding.propellant.adapter =
             ArrayAdapter(
