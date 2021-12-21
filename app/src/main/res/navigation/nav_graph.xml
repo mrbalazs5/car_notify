@@ -62,6 +62,9 @@
             android:name="carId"
             app:argType="integer"
         />
+        <argument
+            android:name="user"
+            app:argType="hu.unimiskolc.iit.mobile.core.domain.User" />
 
         <action
             android:id="@+id/action_CarFragment_to_CarSettingsFragment"
@@ -79,10 +82,13 @@
             android:name="carId"
             app:argType="integer"
             />
+        <argument
+            android:name="user"
+            app:argType="hu.unimiskolc.iit.mobile.core.domain.User" />
 
         <action
-            android:id="@+id/action_CarSettingsFragment_to_CarFragment"
-            app:destination="@id/CarFragment"
+            android:id="@+id/action_CarSettingsFragment_to_MyCarsFragment"
+            app:destination="@id/MyCarsFragment"
             />
     </fragment>
 

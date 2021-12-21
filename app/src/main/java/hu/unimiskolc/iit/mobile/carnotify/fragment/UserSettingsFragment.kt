@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.room.Room
 import hu.unimiskolc.iit.mobile.carnotify.R
-import hu.unimiskolc.iit.mobile.carnotify.databinding.RegistrationFragmentBinding
+import hu.unimiskolc.iit.mobile.carnotify.databinding.UserSettingsBinding
 import hu.unimiskolc.iit.mobile.core.domain.User
 import hu.unimiskolc.iit.mobile.framework.db.CarNotifyDatabase
 import hu.unimiskolc.iit.mobile.framework.db.datasource.RoomUserDataSource
@@ -25,7 +25,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class UserSettingsFragment: Fragment() {
-    private var _binding: RegistrationFragmentBinding? = null
+    private var _binding: UserSettingsBinding? = null
 
     private val binding get() = _binding!!
 
@@ -43,7 +43,7 @@ class UserSettingsFragment: Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = RegistrationFragmentBinding.inflate(inflater, container, false)
+        _binding = UserSettingsBinding.inflate(inflater, container, false)
 
         val db = Room.databaseBuilder(
             this.requireContext(),
@@ -61,6 +61,8 @@ class UserSettingsFragment: Fragment() {
         val formatter = SimpleDateFormat("yyyy.MM.dd", Locale.US)
 
         val userId = arguments?.get("userId") as Int
+
+        val deviceEmail = getString(R.string.device_email)
 
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
@@ -84,34 +86,40 @@ class UserSettingsFragment: Fragment() {
         uiScope.launch {
             user = userDataSource.fetchById(userId)
 
+            if(user?.email == deviceEmail) {
+                binding.email.visibility = View.GONE
+                binding.password.visibility = View.GONE
+            }
+
             binding.name.setText(user?.name)
             binding.email.setText(user?.email)
             binding.birthDateValue.text = formatter.format(user!!.birthDate)
             birthDateCalendar.time = user!!.birthDate
         }
 
-        binding.submitButton.setOnClickListener {
+        binding.saveButton.setOnClickListener {
             uiScope.launch {
                 val name: String = binding.name.text.toString()
                 val email: String = binding.email.text.toString()
                 val password: String = binding.password.text.toString()
 
-                val existingUser = userDataSource.fetchByEmail(email)
-                val deviceEmail = getString(R.string.device_email)
+                if(user?.email != email) {
+                    val existingUser = userDataSource.fetchByEmail(email)
 
-                if(existingUser != null || email == deviceEmail) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Email address already taken.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    if(existingUser != null || email == deviceEmail) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Email address already taken.",
+                            Toast.LENGTH_SHORT
+                        ).show()
 
-                    return@launch
+                        return@launch
+                    }
                 }
 
-                user?.name = name
-                user?.email = email
-                user?.password = if(user?.password != password) BCrypt.hashpw(password, BCrypt.gensalt()) else password
+                user?.name = if(user?.name != name && name != "") name else user?.name!!
+                user?.email = if(user?.email != email && email != "") email else user?.email!!
+                user?.password = if(user?.password != password && password != "") BCrypt.hashpw(password, BCrypt.gensalt()) else user?.password!!
                 user?.birthDate = birthDateCalendar.time
 
                 userDataSource.update(user!!)
